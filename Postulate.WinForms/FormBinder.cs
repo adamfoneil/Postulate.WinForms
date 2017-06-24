@@ -1,4 +1,5 @@
 ﻿using Postulate.Orm.Abstract;
+using Postulate.Orm.Enums;
 using Postulate.WinForms.Controls;
 using ReflectionHelper;
 using System;
@@ -20,6 +21,7 @@ namespace Postulate.WinForms
 		private SqlDb<TKey> _db;
 		private List<Action<TRecord>> _readActions;
 		private List<Action> _clearActions;
+        private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -48,8 +50,8 @@ namespace Postulate.WinForms
 				if (!Save())
 				{
 					if (MessageBox.Show(
-						"The record could not be saved. Click OK to lose your changes or Cancel to try again.",
-						"Form Closing", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+						"The record could not be saved. Click OK to try again, or Cancel to lose your changes.",
+						"Form Closing", MessageBoxButtons.OKCancel) == DialogResult.OK)
 					{
 						e.Cancel = true;
 					}
@@ -58,11 +60,17 @@ namespace Postulate.WinForms
 
 			_form.KeyDown += delegate (object sender, KeyEventArgs e)
 			{
-				if (e.KeyCode == Keys.Enter && e.Shift)
+				if (e.KeyCode == Keys.Enter && e.Shift && !e.Control)
 				{
 					Save();
 					e.Handled = true;
 				}
+
+                if (e.KeyCode == Keys.Enter && e.Shift && e.Control)
+                {
+                    Validate();
+                    e.Handled = true;
+                }
 
 				if (e.KeyCode == Keys.Add && e.Control)
 				{
@@ -101,6 +109,18 @@ namespace Postulate.WinForms
 			return false;
 		}
 
+        public bool Validate()
+        {
+            using (var cn = _db.GetConnection())
+            {
+                cn.Open();                
+                string message;
+                RecordStatus status = (_record.IsValid(cn, out message)) ? RecordStatus.Editing : RecordStatus.Invalid;
+                ValidationPanel?.SetStatus(status, message);
+                return (status == RecordStatus.Valid);
+            }
+        }
+
 		public bool Save()
 		{
 			if (_suspend) return true;
@@ -138,7 +158,7 @@ namespace Postulate.WinForms
 		public bool AddNew()
 		{
 			if (Save())
-			{
+			{                
 				_record = new TRecord();
 				_suspend = true;
 				foreach (var action in _clearActions) action.Invoke();
@@ -206,7 +226,7 @@ namespace Postulate.WinForms
         {            
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> writeAction = (record) =>
-            {                
+            {
                 pi.SetValue(record, control.Text);
             };
 
@@ -217,6 +237,7 @@ namespace Postulate.WinForms
             Action<TRecord> readAction = (record) =>
             {
                 control.Text = func.Invoke(record)?.ToString();
+                _textChanges[control.Name] = false;
             };
 
             AddControl(control, writeAction, readAction);
@@ -224,9 +245,12 @@ namespace Postulate.WinForms
 
 		public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
 		{
-			control.Validated += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
+            _textChanges.Add(control.Name, false);
+            control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) _textChanges[control.Name] = true; };
+			control.Validated += delegate (object sender, EventArgs e) { if (_textChanges[control.Name]) { ValueChanged(writeAction); _textChanges[control.Name] = false; } };
 			_readActions.Add(readAction);
 			_clearActions.Add(() => { control.Text = null; });
+            
 		}
 
 		public void AddControl(RadioButton control, Action<TRecord> writeAction, Action<TRecord> readAction)
