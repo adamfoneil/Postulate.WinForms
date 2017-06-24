@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,6 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComboBoxExtensions.cs" />
+    <Compile Include="Controls\ValidationPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ValidationPanel.Designer.cs">
+      <DependentUpon>ValidationPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormBinder.cs" />
     <Compile Include="GridViewBinder.cs" />
     <Compile Include="ListItem.cs" />
@@ -54,6 +61,11 @@
     <PackageReference Include="Postulate.Sql">
       <Version>1.0.16</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\ValidationPanel.resx">
+      <DependentUpon>ValidationPanel.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -22,6 +22,7 @@ namespace TestWinForms
             InitializeComponent();
             _binder = new FormBinder<Customer, int>(this, new TdgDb());
             _binder.RecordSaved += binder_RecordSaved;
+            _binder.ValidationPanel = validationPanel1;
 
             _binder.AddControl(cbOrg, c => c.OrganizationId);
             _binder.AddControl(tbFirstName, c => c.FirstName);

@@ -1,4 +1,5 @@
 ﻿using Postulate.Orm.Abstract;
+using Postulate.WinForms.Controls;
 using ReflectionHelper;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Postulate.WinForms
 		private List<Action<TRecord>> _readActions;
 		private List<Action> _clearActions;
 
-        public ErrorProvider ErrorProvider { get; set; }
+        public ValidationPanel ValidationPanel { get; set; }
 
 		public event EventHandler Dirty;
 
@@ -113,11 +114,14 @@ namespace Postulate.WinForms
                     _db.Save(_record);
 					IsDirty = false;
 					RecordSaved?.Invoke(this, new EventArgs());
+                    ValidationPanel?.SetStatus(RecordStatus.Valid, "Record saved");
 				}
 				return true;
 			}
 			catch (Exception exc)
 			{
+                ValidationPanel?.SetStatus(RecordStatus.Invalid, exc.Message);
+
 				if (MessageBox.Show($"The record could not be saved: {exc.Message}\r\nClick OK to try again or Cancel to lose your changes.", "Save Error", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
 				{
 					UndoChanges();
@@ -140,6 +144,7 @@ namespace Postulate.WinForms
 				foreach (var action in _clearActions) action.Invoke();
 				NewRecord?.Invoke(this, new EventArgs());
 				FirstControl?.Focus();
+                ValidationPanel?.SetStatus(RecordStatus.Valid, "New record created");
 				_suspend = false;
 				return true;
 			}
@@ -253,8 +258,16 @@ namespace Postulate.WinForms
 				if (_dirty != value)
 				{
 					_dirty = value;
-					if (value) Dirty?.Invoke(this, new EventArgs());
-					if (!value) Clean?.Invoke(this, new EventArgs());
+                    if (value)
+                    {
+                        Dirty?.Invoke(this, new EventArgs());
+                        ValidationPanel?.SetStatus(RecordStatus.Editing, "Editing record...");
+                    }
+                    if (!value)
+                    {
+                        Clean?.Invoke(this, new EventArgs());
+                        ValidationPanel?.SetStatus(RecordStatus.Valid, "Record restored...");
+                    }
 				}
 			}
 		}
