@@ -1,6 +1,7 @@
 ﻿using Postulate.Sql.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,17 @@ namespace Postulate.WinForms
         public static void Fill<TValue>(this ComboBox comboBox, Query<ListItem<TValue>> query)
         {
             var results = query.Execute();
+            FillInner(comboBox, results);
+        }
+
+        public static void Fill<TValue>(this ComboBox comboBox, IDbConnection connection, Query<ListItem<TValue>> query)
+        {
+            var results = query.Execute(connection);
+            FillInner(comboBox, results);
+        }
+
+        private static void FillInner<TValue>(ComboBox comboBox, IEnumerable<ListItem<TValue>> results)
+        {
             comboBox.Items.Clear();
             foreach (var item in results) comboBox.Items.Add(item);
         }
