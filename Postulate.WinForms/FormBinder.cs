@@ -267,7 +267,24 @@ namespace Postulate.WinForms
 			_clearActions.Add(() => { control.Checked = false; });
 		}
 
-		private void ValueChanged(Action<TRecord> setProperty)
+        public void AddControl(CheckBox control, Expression<Func<TRecord, object>> property)
+        {
+            PropertyInfo pi = GetProperty(property);
+            Action<TRecord> writeAction = (record) =>
+            {
+                pi.SetValue(record, control.Text);
+            };
+
+            var func = property.Compile();
+            Action<TRecord> readAction = (record) =>
+            {
+                control.Checked = Convert.ToBoolean(func.Invoke(record));
+            };
+
+            AddControl(control, writeAction, readAction);
+        }
+
+        private void ValueChanged(Action<TRecord> setProperty)
 		{
 			if (_suspend) return;
 			setProperty.Invoke(_record);
