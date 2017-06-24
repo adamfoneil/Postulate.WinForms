@@ -26,7 +26,7 @@ namespace Postulate.WinForms.Controls
         public void SetStatus(RecordStatus status, string message = null)
         {            
             pbStatus.Image = imageList1.Images[(int)status];
-            label1.Text = message.Replace("\r\n", " ");
+            label1.Text = message?.Replace("\r\n", " ");
         }
     }
 }

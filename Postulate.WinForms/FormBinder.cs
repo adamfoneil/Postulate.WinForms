@@ -116,7 +116,7 @@ namespace Postulate.WinForms
                 cn.Open();                
                 string message;
                 RecordStatus status = (_record.IsValid(cn, out message)) ? RecordStatus.Editing : RecordStatus.Invalid;
-                ValidationPanel?.SetStatus(status, message);
+                ValidationPanel?.SetStatus(status, message ?? "Record has no errors");
                 return (status == RecordStatus.Valid);
             }
         }
@@ -164,7 +164,7 @@ namespace Postulate.WinForms
 				foreach (var action in _clearActions) action.Invoke();
 				NewRecord?.Invoke(this, new EventArgs());
 				FirstControl?.Focus();
-                ValidationPanel?.SetStatus(RecordStatus.Valid, "New record created");
+                ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
 				_suspend = false;
 				return true;
 			}
@@ -285,7 +285,7 @@ namespace Postulate.WinForms
                     if (value)
                     {
                         Dirty?.Invoke(this, new EventArgs());
-                        ValidationPanel?.SetStatus(RecordStatus.Editing, "Editing record...");
+                        ValidationPanel?.SetStatus(RecordStatus.Editing, "Edit in progress...");
                     }
                     if (!value)
                     {
