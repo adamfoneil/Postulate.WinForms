@@ -22,6 +22,7 @@ namespace Postulate.WinForms
 		private List<Action<TRecord>> _readActions;
 		private List<Action> _clearActions;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
+        private Timer _escapeTimer = null;
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -83,6 +84,25 @@ namespace Postulate.WinForms
 					Delete();
 					e.Handled = true;
 				}
+
+                if (e.KeyCode == Keys.Escape)
+                {
+                    if (_escapeTimer == null)
+                    {
+                        _escapeTimer = new Timer();
+                        _escapeTimer.Tick += _escapeTimer_Tick;
+                        _escapeTimer.Interval = 500;
+                        _escapeTimer.Start();
+                    }
+                    else
+                    {                        
+                        if (MessageBox.Show("Click OK to undo changes to the record.", "Undo", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                        {
+                            UndoChanges();
+                        }
+                        e.Handled = true;
+                    }
+                }
 			};
 
 			_readActions = new List<Action<TRecord>>();
@@ -90,7 +110,13 @@ namespace Postulate.WinForms
 			_db = sqlDb;
 		}
 
-		public TRecord CurrentRecord
+        private void _escapeTimer_Tick(object sender, EventArgs e)
+        {
+            _escapeTimer.Stop();
+            _escapeTimer = null;
+        }
+
+        public TRecord CurrentRecord
 		{
 			get { return _record; }
 		}
