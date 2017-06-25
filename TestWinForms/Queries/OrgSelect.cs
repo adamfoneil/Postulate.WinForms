@@ -6,7 +6,9 @@ namespace TestWinForms.Queries
 {
     public class OrgSelect : Query<ListItem<int>>
     {
-        public OrgSelect() : base("SELECT [Id] AS [Value], [Name] AS [Text] FROM [dbo].[Organization] ORDER BY [Name]", () => new TdgDb().GetConnection())
+        public OrgSelect() : base(
+            "SELECT [Id] AS [Value], [Name] AS [Text] FROM [dbo].[Organization] ORDER BY [Name]", 
+            () => new TdgDb().GetConnection())
         {
         }
     }

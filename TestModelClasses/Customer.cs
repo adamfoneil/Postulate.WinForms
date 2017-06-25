@@ -1,11 +1,6 @@
 ﻿using Postulate.Orm.Abstract;
 using Postulate.Orm.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Test2.Models
 {
@@ -41,5 +36,7 @@ namespace Test2.Models
         [MaxLength(100)]
         [Required]
         public string Email { get; set; }
+        
+        public bool IsTaxExempt { get; set; }
     }
 }

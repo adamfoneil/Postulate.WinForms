@@ -224,21 +224,26 @@ namespace Postulate.WinForms
 			return false;
 		}
 
-        public void AddControl(ComboBox control, Expression<Func<TRecord, object>> property)
-        {            
+        public void AddControl<TValue>(ComboBox control, Expression<Func<TRecord, object>> property)
+        {
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> writeAction = (record) =>
-            {                
-                pi.SetValue(record, control.GetValue<int>());
+            {
+                pi.SetValue(record, control.GetValue<TValue>());
             };
 
             var func = property.Compile();
             Action<TRecord> readAction = (record) =>
             {
-                control.SelectedValue = func.Invoke(record);                
+                control.SelectedValue = func.Invoke(record);
             };
 
             AddControl(control, writeAction, readAction);
+        }
+
+        public void AddControl(ComboBox control, Expression<Func<TRecord, object>> property)
+        {
+            AddControl<int>(control, property);
         }
 
         public void AddControl(ComboBox control, Action<TRecord> writeAction, Action<TRecord> readAction)

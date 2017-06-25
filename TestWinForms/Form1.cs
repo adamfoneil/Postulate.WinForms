@@ -20,6 +20,7 @@ namespace TestWinForms
         public Form1()
         {
             InitializeComponent();
+
             _binder = new FormBinder<Customer, int>(this, new TdgDb());
             _binder.RecordSaved += binder_RecordSaved;
             _binder.ValidationPanel = validationPanel1;
@@ -29,7 +30,7 @@ namespace TestWinForms
             _binder.AddControl(tbLastName, c => c.LastName);
             _binder.AddControl(tbAddress, c => c.Address);
             _binder.AddControl(tbCity, c => c.City);
-            _binder.AddControl(tbState, c => c.State);
+            _binder.AddControl<string>(cbState, c => c.State);
             _binder.AddControl(tbZipCode, c => c.ZipCode);
             _binder.AddControl(tbEmail, c => c.Email);            
         }
@@ -42,8 +43,14 @@ namespace TestWinForms
         private void Form1_Load(object sender, EventArgs e)
         {            
             cbOrg.Fill(new OrgSelect());
+            cbState.Fill(new StateSelect());
 
             _binder.AddNew();
+        }
+
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+            _binder.CurrentRecord
         }
     }
 }
