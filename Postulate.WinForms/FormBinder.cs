@@ -265,6 +265,11 @@ namespace Postulate.WinForms
 		}
 
         public void AddControl(TextBox control, Expression<Func<TRecord, object>> property)
+        {
+            AddControl<object>(control, property);
+        }
+
+        public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property)
         {            
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> writeAction = (record) =>
@@ -313,6 +318,27 @@ namespace Postulate.WinForms
 			_clearActions.Add(() => { control.Checked = false; });
 		}
 
+        public void AddRadioButtons<TValue>(RadioButtonBinder<TValue>[] radioButtons, Expression<Func<TRecord, TValue>> property)
+        {
+            PropertyInfo pi = GetProperty(property);
+
+            foreach (var rbb in radioButtons)
+            {
+                Action<TRecord> writeAction = (record) =>
+                {
+                    pi.SetValue(record, rbb.Value);
+                };
+
+                var func = property.Compile();
+                Action<TRecord> readAction = (record) =>
+                {
+                    rbb.RadioButton.Checked = func.Invoke(record).Equals(rbb.Value);
+                };
+
+                AddControl(rbb.RadioButton, writeAction, readAction);
+            }
+        }
+
 		public void AddControl(CheckBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
 		{
 			control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
@@ -320,7 +346,7 @@ namespace Postulate.WinForms
 			_clearActions.Add(() => { control.Checked = false; });
 		}
 
-        public void AddControl(CheckBox control, Expression<Func<TRecord, object>> property)
+        public void AddControl(CheckBox control, Expression<Func<TRecord, bool>> property)
         {
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> writeAction = (record) =>
@@ -407,7 +433,7 @@ namespace Postulate.WinForms
             return me.Member.Name;
         }
 
-        private PropertyInfo GetProperty(Expression<Func<TRecord, object>> property)
+        private PropertyInfo GetProperty<TValue>(Expression<Func<TRecord, TValue>> property)
         {
             string propName = PropertyNameFromLambda(property);
             PropertyInfo pi = typeof(TRecord).GetProperty(propName);
