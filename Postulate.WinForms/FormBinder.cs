@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace Postulate.WinForms
 {
@@ -22,6 +23,8 @@ namespace Postulate.WinForms
 		private List<Action<TRecord>> _readActions;
 		private List<Action> _clearActions;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
+        private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
         private Timer _escapeTimer = null;
 
         public ValidationPanel ValidationPanel { get; set; }
@@ -149,15 +152,21 @@ namespace Postulate.WinForms
 
 		public bool Save()
 		{
+            // get the textboxes with changes that haven't fired Validated event
+            var unvalidatedTextboxes = _textChanges.Where(kp => kp.Value && !_validated[kp.Key]).Select(kp => kp.Key).ToList();
+            foreach (var tb in unvalidatedTextboxes) _textBoxValidators[tb].Validated.Invoke(this, new EventArgs());
+
 			if (_suspend) return true;
 			_suspend = true;
 
 			try
 			{
 				if (IsDirty)
-				{
+				{          
 					SavingRecord?.Invoke(this, new EventArgs());
                     _db.Save(_record);
+                    //foreach (var key in _textChanges.Keys) _textChanges[key] = false;
+                    //foreach (var key in _validated.Keys) _validated[key] = false;
 					IsDirty = false;
 					RecordSaved?.Invoke(this, new EventArgs());
                     ValidationPanel?.SetStatus(RecordStatus.Valid, "Record saved");
@@ -271,9 +280,20 @@ namespace Postulate.WinForms
 
 		public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
 		{
+            EventHandler validated = delegate (object sender, EventArgs e)
+            {
+                if (_textChanges[control.Name])
+                {
+                    ValueChanged(writeAction);
+                    _textChanges[control.Name] = false;
+                    _validated[control.Name] = true;
+                }
+            };
+
+            _textBoxValidators.Add(control.Name, new TextBoxValidator(control, validated));
             _textChanges.Add(control.Name, false);
-            control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) _textChanges[control.Name] = true; };
-			control.Validated += delegate (object sender, EventArgs e) { if (_textChanges[control.Name]) { ValueChanged(writeAction); _textChanges[control.Name] = false; } };
+            control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
+			control.Validated += validated;
 			_readActions.Add(readAction);
 			_clearActions.Add(() => { control.Text = null; });
             
