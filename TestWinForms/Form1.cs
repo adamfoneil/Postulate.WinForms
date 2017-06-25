@@ -1,12 +1,5 @@
 ﻿using Postulate.WinForms;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Test2.Models;
 using TestWinForms.Queries;
@@ -51,12 +44,19 @@ namespace TestWinForms
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-            int id;
-            if (int.TryParse(tbFind.Text, out id))
+            try
             {
-                var record = _db.Find<Customer>(id);
-                _binder.Load(record);
-            }            
+                int id;
+                if (int.TryParse(tbFind.Text, out id))
+                {
+                    var record = _db.Find<Customer>(id);
+                    _binder.Load(record);
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
         }
     }
 }

@@ -33,5 +33,21 @@ namespace Postulate.WinForms
         {
             return (comboBox.SelectedItem != null) ? ((ListItem<TValue>)comboBox.SelectedItem).Value : defaultValue;
         }
+
+        public static void SetValue<TValue>(this ComboBox comboBox, TValue value)
+        {
+            var items = comboBox.Items.OfType<ListItem<TValue>>();
+            int index = 0;
+            foreach (var item in items)
+            {
+                if (item.Value.Equals(value))
+                {
+                    comboBox.SelectedIndex = index;
+                    return;
+                }
+                index++;
+            }
+            comboBox.SelectedIndex = -1;
+        }
     }
 }

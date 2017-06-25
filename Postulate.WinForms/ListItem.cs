@@ -21,5 +21,17 @@ namespace Postulate.WinForms
         {
             return Text;
         }
+
+        public override bool Equals(object obj)
+        {
+            var listItem = obj as ListItem<TValue>;
+            if (listItem != null) return listItem.Value.Equals(Value);
+            return obj.Equals(this);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
     }
 }

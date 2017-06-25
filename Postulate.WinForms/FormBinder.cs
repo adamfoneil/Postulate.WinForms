@@ -126,6 +126,8 @@ namespace Postulate.WinForms
 
 		public bool Load(TRecord record)
 		{
+            if (record == null) throw new ArgumentNullException(nameof(record));
+
 			if (Save())
 			{
 				_record = record;
@@ -236,7 +238,8 @@ namespace Postulate.WinForms
             var func = property.Compile();
             Action<TRecord> readAction = (record) =>
             {
-                control.SelectedValue = func.Invoke(record);
+                control.SetValue((TValue)func.Invoke(record));
+                //control.SelectedIndex = control.Items.IndexOf((TValue)func.Invoke(record));
             };
 
             AddControl(control, writeAction, readAction);
