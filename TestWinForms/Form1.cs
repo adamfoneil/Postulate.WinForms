@@ -15,13 +15,14 @@ namespace TestWinForms
 {
     public partial class Form1 : Form
     {
+        private TdgDb _db = new TdgDb();
         private FormBinder<Customer, int> _binder = null;
 
         public Form1()
         {
             InitializeComponent();
 
-            _binder = new FormBinder<Customer, int>(this, new TdgDb());
+            _binder = new FormBinder<Customer, int>(this, _db);
             _binder.RecordSaved += binder_RecordSaved;
             _binder.ValidationPanel = validationPanel1;
 
@@ -50,7 +51,12 @@ namespace TestWinForms
 
         private void btnFind_Click(object sender, EventArgs e)
         {
-            _binder.CurrentRecord
+            int id;
+            if (int.TryParse(tbFind.Text, out id))
+            {
+                var record = _db.Find<Customer>(id);
+                _binder.Load(record);
+            }            
         }
     }
 }

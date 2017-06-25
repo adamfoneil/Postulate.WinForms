@@ -132,6 +132,7 @@ namespace Postulate.WinForms
 				_suspend = true;
 				foreach (var action in _readActions) action.Invoke(record);
 				RecordLoaded?.Invoke(this, new EventArgs());
+                ValidationPanel?.SetStatus(RecordStatus.Valid, "Record loaded");
 				_suspend = false;
 				return true;
 			}

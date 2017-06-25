@@ -49,7 +49,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.rbTaxExemptFalse = new System.Windows.Forms.RadioButton();
             this.rbIsTaxExemptTrue = new System.Windows.Forms.RadioButton();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbFind = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.btnFind = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -236,12 +236,12 @@
             this.rbIsTaxExemptTrue.Text = "Exempt";
             this.rbIsTaxExemptTrue.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbFind
             // 
-            this.textBox1.Location = new System.Drawing.Point(249, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 22;
+            this.tbFind.Location = new System.Drawing.Point(249, 12);
+            this.tbFind.Name = "tbFind";
+            this.tbFind.Size = new System.Drawing.Size(100, 20);
+            this.tbFind.TabIndex = 22;
             // 
             // label10
             // 
@@ -269,7 +269,7 @@
             this.ClientSize = new System.Drawing.Size(420, 361);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tbFind);
             this.Controls.Add(this.rbIsTaxExemptTrue);
             this.Controls.Add(this.rbTaxExemptFalse);
             this.Controls.Add(this.label9);
@@ -322,7 +322,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.RadioButton rbTaxExemptFalse;
         private System.Windows.Forms.RadioButton rbIsTaxExemptTrue;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbFind;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnFind;
     }
