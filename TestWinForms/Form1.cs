@@ -17,6 +17,7 @@ namespace TestWinForms
 
             _binder = new FormBinder<Customer, int>(this, _db);
             _binder.RecordSaved += binder_RecordSaved;
+            _binder.RecordLoaded += binder_RecordSaved;
             _binder.ValidationPanel = validationPanel1;
 
             _binder.AddControl(cbOrg, c => c.OrganizationId);
@@ -27,10 +28,10 @@ namespace TestWinForms
             _binder.AddControl<string>(cbState, c => c.State);
             _binder.AddControl(tbZipCode, c => c.ZipCode);
             _binder.AddControl(tbEmail, c => c.Email);
-            _binder.AddRadioButtons(new RadioButtonBinder<bool>[]
+            _binder.AddRadioButtons(new RadioButtonDictionary<bool>()
             {
-                new RadioButtonBinder<bool>(rbIsTaxExemptTrue, true),
-                new RadioButtonBinder<bool>(rbTaxExemptFalse, false)
+                { true, rbIsTaxExemptTrue },
+                { false, rbTaxExemptFalse }
             }, c => c.IsTaxExempt);
         }
 

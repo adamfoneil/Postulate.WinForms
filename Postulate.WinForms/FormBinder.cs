@@ -318,7 +318,7 @@ namespace Postulate.WinForms
 			_clearActions.Add(() => { control.Checked = false; });
 		}
 
-        public void AddRadioButtons<TValue>(RadioButtonBinder<TValue>[] radioButtons, Expression<Func<TRecord, TValue>> property)
+        public void AddRadioButtons<TValue>(RadioButtonDictionary<TValue> radioButtons, Expression<Func<TRecord, TValue>> property)
         {
             PropertyInfo pi = GetProperty(property);
 
@@ -326,16 +326,16 @@ namespace Postulate.WinForms
             {
                 Action<TRecord> writeAction = (record) =>
                 {
-                    pi.SetValue(record, rbb.Value);
+                    pi.SetValue(record, rbb.Key);
                 };
 
                 var func = property.Compile();
                 Action<TRecord> readAction = (record) =>
                 {
-                    rbb.RadioButton.Checked = func.Invoke(record).Equals(rbb.Value);
+                    rbb.Value.Checked = func.Invoke(record).Equals(rbb.Key);
                 };
 
-                AddControl(rbb.RadioButton, writeAction, readAction);
+                AddControl(rbb.Value, writeAction, readAction);
             }
         }
 
