@@ -165,8 +165,6 @@ namespace Postulate.WinForms
 				{          
 					SavingRecord?.Invoke(this, new EventArgs());
                     _db.Save(_record);
-                    //foreach (var key in _textChanges.Keys) _textChanges[key] = false;
-                    //foreach (var key in _validated.Keys) _validated[key] = false;
 					IsDirty = false;
 					RecordSaved?.Invoke(this, new EventArgs());
                     ValidationPanel?.SetStatus(RecordStatus.Valid, "Record saved");
