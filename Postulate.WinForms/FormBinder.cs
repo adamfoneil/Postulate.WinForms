@@ -361,11 +361,4 @@ namespace Postulate.WinForms
         public Action<TRecord> SetControl { get; set; }
         public Action<TRecord> SetProperty { get; set; }
     }
-
-    public interface IFormBinderControl
-    {
-        string Name { get; }
-
-        event EventHandler ValueChanged;
-    }
 }

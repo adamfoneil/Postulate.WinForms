@@ -55,6 +55,7 @@
     <Compile Include="FormBinder_RadioButtons.cs" />
     <Compile Include="FormBinder_TextBoxes.cs" />
     <Compile Include="GridViewBinder.cs" />
+    <Compile Include="IFormBinderControl.cs" />
     <Compile Include="ListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadioButtonDictionary.cs" />
