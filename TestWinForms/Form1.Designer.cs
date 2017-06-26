@@ -52,6 +52,7 @@
             this.tbFind = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.btnFind = new System.Windows.Forms.Button();
+            this.chkSendNewsletter = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // tbFirstName
@@ -180,7 +181,7 @@
             // lblId
             // 
             this.lblId.AutoSize = true;
-            this.lblId.Location = new System.Drawing.Point(81, 289);
+            this.lblId.Location = new System.Drawing.Point(81, 312);
             this.lblId.Name = "lblId";
             this.lblId.Size = new System.Drawing.Size(35, 13);
             this.lblId.TabIndex = 16;
@@ -191,7 +192,7 @@
             this.validationPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.validationPanel1.BackColor = System.Drawing.SystemColors.Info;
-            this.validationPanel1.Location = new System.Drawing.Point(12, 318);
+            this.validationPanel1.Location = new System.Drawing.Point(12, 355);
             this.validationPanel1.Name = "validationPanel1";
             this.validationPanel1.Size = new System.Drawing.Size(396, 31);
             this.validationPanel1.TabIndex = 17;
@@ -208,7 +209,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(21, 261);
+            this.label9.Location = new System.Drawing.Point(21, 284);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(57, 13);
             this.label9.TabIndex = 19;
@@ -217,7 +218,7 @@
             // rbTaxExemptFalse
             // 
             this.rbTaxExemptFalse.AutoSize = true;
-            this.rbTaxExemptFalse.Location = new System.Drawing.Point(84, 259);
+            this.rbTaxExemptFalse.Location = new System.Drawing.Point(84, 282);
             this.rbTaxExemptFalse.Name = "rbTaxExemptFalse";
             this.rbTaxExemptFalse.Size = new System.Drawing.Size(92, 17);
             this.rbTaxExemptFalse.TabIndex = 20;
@@ -228,7 +229,7 @@
             // rbIsTaxExemptTrue
             // 
             this.rbIsTaxExemptTrue.AutoSize = true;
-            this.rbIsTaxExemptTrue.Location = new System.Drawing.Point(182, 259);
+            this.rbIsTaxExemptTrue.Location = new System.Drawing.Point(182, 282);
             this.rbIsTaxExemptTrue.Name = "rbIsTaxExemptTrue";
             this.rbIsTaxExemptTrue.Size = new System.Drawing.Size(60, 17);
             this.rbIsTaxExemptTrue.TabIndex = 21;
@@ -262,11 +263,22 @@
             this.btnFind.UseVisualStyleBackColor = true;
             this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // 
+            // chkSendNewsletter
+            // 
+            this.chkSendNewsletter.AutoSize = true;
+            this.chkSendNewsletter.Location = new System.Drawing.Point(84, 259);
+            this.chkSendNewsletter.Name = "chkSendNewsletter";
+            this.chkSendNewsletter.Size = new System.Drawing.Size(104, 17);
+            this.chkSendNewsletter.TabIndex = 25;
+            this.chkSendNewsletter.Text = "Send Newsletter";
+            this.chkSendNewsletter.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(420, 361);
+            this.ClientSize = new System.Drawing.Size(420, 398);
+            this.Controls.Add(this.chkSendNewsletter);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.tbFind);
@@ -325,6 +337,7 @@
         private System.Windows.Forms.TextBox tbFind;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnFind;
+        private System.Windows.Forms.CheckBox chkSendNewsletter;
     }
 }
 

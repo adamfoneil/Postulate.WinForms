@@ -39,5 +39,8 @@ namespace Test2.Models
         
         [DefaultExpression("0")]
         public bool IsTaxExempt { get; set; }
+
+        [DefaultExpression("1")]
+        public bool SendNewsletter { get; set; }
     }
 }

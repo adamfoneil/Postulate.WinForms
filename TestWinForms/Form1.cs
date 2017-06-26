@@ -25,9 +25,10 @@ namespace TestWinForms
             _binder.AddControl(tbLastName, c => c.LastName);
             _binder.AddControl(tbAddress, c => c.Address);
             _binder.AddControl(tbCity, c => c.City);
-            _binder.AddControl<string>(cbState, c => c.State, "NC");
+            _binder.AddControl<string>(cbState, c => c.State);
             _binder.AddControl(tbZipCode, c => c.ZipCode);
             _binder.AddControl(tbEmail, c => c.Email);
+            _binder.AddControl(chkSendNewsletter, c => c.SendNewsletter, true);
             _binder.AddRadioButtons(new RadioButtonDictionary<bool>()
             {
                 { true, rbIsTaxExemptTrue },
