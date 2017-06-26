@@ -22,7 +22,7 @@ namespace Postulate.WinForms
         public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property, TValue defaultValue = default(TValue))
         {
             PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
+            Action<TRecord> setProperty = (record) =>
             {
                 pi.SetValue(record, control.Text);
             };
@@ -31,22 +31,22 @@ namespace Postulate.WinForms
             if (pi.HasAttribute(out attr)) control.MaxLength = attr.Length;
 
             var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
+            Action<TRecord> setControl = (record) =>
             {
                 control.Text = func.Invoke(record)?.ToString();
                 _textChanges[control.Name] = false;
             };
 
-            AddControl(control, writeAction, readAction, defaultValue);
+            AddControl(control, setProperty, setControl, defaultValue);
         }
 
-        public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction, object defaultValue = null)
+        public void AddControl(TextBox control, Action<TRecord> setProperty, Action<TRecord> setControl, object defaultValue = null)
         {
             EventHandler validated = delegate (object sender, EventArgs e)
             {
                 if (_textChanges[control.Name])
                 {
-                    ValueChanged(writeAction);
+                    ValueChanged(setProperty);
                     _textChanges[control.Name] = false;
                     _validated[control.Name] = true;
                 }
@@ -56,7 +56,7 @@ namespace Postulate.WinForms
             _textChanges.Add(control.Name, false);
             control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
             control.Validated += validated;
-            _readActions.Add(readAction);
+            _setControls.Add(setControl);
             _clearActions.Add(() => { control.Text = defaultValue?.ToString(); });
         }
     }

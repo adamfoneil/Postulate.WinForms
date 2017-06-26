@@ -20,36 +20,36 @@ namespace Postulate.WinForms
         public void AddControl<TValue>(ComboBox control, Expression<Func<TRecord, object>> property, TValue defaultValue = default(TValue))
         {
             PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
+            Action<TRecord> setProperty = (record) =>
             {
                 pi.SetValue(record, control.GetValue<TValue>());
             };
 
             var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
+            Action<TRecord> setControl = (record) =>
             {
                 control.SetValue((TValue)func.Invoke(record));
             };
 
             if (typeof(TValue).Equals(typeof(int)))
             {
-                AddComboBox(control, writeAction, readAction, () => { control.SelectedIndex = -1; });
+                AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = -1; });
             }
             else
             {                
-                AddComboBox(control, writeAction, readAction, () => { control.SetValue(defaultValue); });
+                AddComboBox(control, setProperty, setControl, () => { control.SetValue(defaultValue); });
             }            
         }
 
-        public void AddControl(ComboBox control, Action<TRecord> writeAction, Action<TRecord> readAction, int defaultValue = -1)
+        public void AddControl(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, int defaultValue = -1)
         {
-            AddComboBox(control, writeAction, readAction, () => { control.SelectedIndex = defaultValue; });
+            AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = defaultValue; });
         }
 
-        private void AddComboBox(ComboBox control, Action<TRecord> writeAction, Action<TRecord> readAction, Action clearAction)
+        private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action clearAction)
         {
-            control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
+            control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
+            _setControls.Add(setControl);
             _clearActions.Add(clearAction);
         }
     }

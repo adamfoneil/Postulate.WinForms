@@ -8,28 +8,28 @@ namespace Postulate.WinForms
 {
     public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
-        public void AddControl(CheckBox control, Action<TRecord> writeAction, Action<TRecord> readAction, bool defaultValue = false)
+        public void AddControl(CheckBox control, Action<TRecord> setProperty, Action<TRecord> setControl, bool defaultValue = false)
         {
-            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
+            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
+            _setControls.Add(setControl);
             _clearActions.Add(() => { control.Checked = defaultValue; });
         }
 
         public void AddControl(CheckBox control, Expression<Func<TRecord, bool>> property, bool defaultValue = false)
         {
             PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
+            Action<TRecord> setProperty = (record) =>
             {
                 pi.SetValue(record, control.Text);
             };
 
             var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
+            Action<TRecord> setControl = (record) =>
             {
                 control.Checked = Convert.ToBoolean(func.Invoke(record));
             };
 
-            AddControl(control, writeAction, readAction, defaultValue);
+            AddControl(control, setProperty, setControl, defaultValue);
         }
     }
 }

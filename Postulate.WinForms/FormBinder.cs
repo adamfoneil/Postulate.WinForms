@@ -19,7 +19,7 @@ namespace Postulate.WinForms
         private bool _suspend = false;
         private bool _dirty = false;
         private SqlDb<TKey> _db;
-        private List<Action<TRecord>> _readActions;
+        private List<Action<TRecord>> _setControls;
         private List<Action> _clearActions;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
@@ -108,7 +108,7 @@ namespace Postulate.WinForms
                 }
             };
 
-            _readActions = new List<Action<TRecord>>();
+            _setControls = new List<Action<TRecord>>();
             _clearActions = new List<Action>();
             _db = sqlDb;
         }
@@ -138,7 +138,7 @@ namespace Postulate.WinForms
             {
                 _record = record;
                 _suspend = true;
-                foreach (var action in _readActions) action.Invoke(record);
+                foreach (var action in _setControls) action.Invoke(record);
                 RecordLoaded?.Invoke(this, new EventArgs());
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "Record loaded");
                 _suspend = false;
@@ -218,7 +218,7 @@ namespace Postulate.WinForms
         {
             IsDirty = false;
             _suspend = true;
-            foreach (var action in _readActions) action.Invoke(_record);
+            foreach (var action in _setControls) action.Invoke(_record);
             _suspend = false;
         }
 
@@ -235,10 +235,10 @@ namespace Postulate.WinForms
             return false;
         }
 
-        public void AddControl(IFormBinderControl control, Action<TRecord> writeAction, Action<TRecord> readAction, Action clearAction)
+        public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action clearAction)
         {            
-            control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
+            control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
+            _setControls.Add(setControl);
             _clearActions.Add(clearAction);
         }
 

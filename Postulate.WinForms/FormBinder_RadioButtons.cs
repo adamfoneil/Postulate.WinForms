@@ -12,10 +12,10 @@ namespace Postulate.WinForms
 {
     public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
-        public void AddControl(RadioButton control, Action<TRecord> writeAction, Action<TRecord> readAction, bool defaultValue = false)
+        public void AddControl(RadioButton control, Action<TRecord> setProperty, Action<TRecord> setControl, bool defaultValue = false)
         {
-            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
+            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
+            _setControls.Add(setControl);
             _clearActions.Add(() => { control.Checked = defaultValue; });
         }
 
@@ -25,19 +25,19 @@ namespace Postulate.WinForms
 
             foreach (var rbb in radioButtons)
             {
-                Action<TRecord> writeAction = (record) =>
+                Action<TRecord> setProperty = (record) =>
                 {
                     pi.SetValue(record, rbb.Key);
                 };
 
                 var func = property.Compile();
-                Action<TRecord> readAction = (record) =>
+                Action<TRecord> setControl = (record) =>
                 {
                     rbb.Value.Checked = func.Invoke(record).Equals(rbb.Key);
                 };
 
                 bool innerDefault = defaultValue?.Equals(rbb.Key) ?? false;
-                AddControl(rbb.Value, writeAction, readAction, innerDefault);
+                AddControl(rbb.Value, setProperty, setControl, innerDefault);
             }
         }
     }
