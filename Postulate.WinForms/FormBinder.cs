@@ -1,10 +1,8 @@
 ﻿using Postulate.Orm.Abstract;
 using Postulate.WinForms.Controls;
-using ReflectionHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -25,7 +23,7 @@ namespace Postulate.WinForms
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
         private Timer _escapeTimer = null;
-        private TRecord _priorRecord = null;        
+        private TRecord _priorRecord = null;
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -204,7 +202,7 @@ namespace Postulate.WinForms
                 if (_record != null) _priorRecord = _record;
                 _record = new TRecord();
                 _suspend = true;
-                foreach (var action in _setDefaults) action.Invoke();                
+                foreach (var action in _setDefaults) action.Invoke();
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
@@ -236,7 +234,7 @@ namespace Postulate.WinForms
         }
 
         public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction)
-        {            
+        {
             control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
             _setDefaults.Add(defaultAction);
@@ -323,6 +321,7 @@ namespace Postulate.WinForms
     public interface IFormBinderControl
     {
         string Name { get; }
+
         event EventHandler ValueChanged;
     }
 }
