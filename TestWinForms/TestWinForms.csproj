@@ -95,7 +95,7 @@
       <Version>0.9.169</Version>
     </PackageReference>
     <PackageReference Include="Postulate.Sql">
-      <Version>1.0.16</Version>
+      <Version>1.0.17</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
