@@ -50,6 +50,10 @@
       <DependentUpon>ValidationPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="FormBinder.cs" />
+    <Compile Include="FormBinder_CheckBoxes.cs" />
+    <Compile Include="FormBinder_ComboBoxes.cs" />
+    <Compile Include="FormBinder_RadioButtons.cs" />
+    <Compile Include="FormBinder_TextBoxes.cs" />
     <Compile Include="GridViewBinder.cs" />
     <Compile Include="ListItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

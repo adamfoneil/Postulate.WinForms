@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace Postulate.WinForms
 {
-    public class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
+    public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
         private Form _form;
         private TRecord _record;
@@ -25,7 +25,7 @@ namespace Postulate.WinForms
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
         private Timer _escapeTimer = null;
-        private TRecord _priorRecord = null;
+        private TRecord _priorRecord = null;        
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -204,7 +204,7 @@ namespace Postulate.WinForms
                 if (_record != null) _priorRecord = _record;
                 _record = new TRecord();
                 _suspend = true;
-                foreach (var action in _clearActions) action.Invoke();
+                foreach (var action in _clearActions) action.Invoke();                
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
@@ -235,138 +235,11 @@ namespace Postulate.WinForms
             return false;
         }
 
-        public void AddControl<TValue>(ComboBox control, Expression<Func<TRecord, object>> property)
-        {
-            PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
-            {
-                pi.SetValue(record, control.GetValue<TValue>());
-            };
-
-            var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
-            {
-                control.SetValue((TValue)func.Invoke(record));                
-            };
-
-            AddControl(control, writeAction, readAction);
-        }
-
-        public void AddControl(ComboBox control, Expression<Func<TRecord, object>> property)
-        {
-            AddControl<int>(control, property);
-        }
-
-        public void AddControl(ComboBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
-        {
-            control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
-            _clearActions.Add(() => { control.SelectedIndex = -1; });
-        }
-
         public void AddControl(IFormBinderControl control, Action<TRecord> writeAction, Action<TRecord> readAction, Action clearAction)
-        {
+        {            
             control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
             _readActions.Add(readAction);
             _clearActions.Add(clearAction);
-        }
-
-        public void AddControl(TextBox control, Expression<Func<TRecord, object>> property)
-        {
-            AddControl<object>(control, property);
-        }
-
-        public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property)
-        {
-            PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
-            {
-                pi.SetValue(record, control.Text);
-            };
-
-            MaxLengthAttribute attr;
-            if (pi.HasAttribute(out attr)) control.MaxLength = attr.Length;
-
-            var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
-            {
-                control.Text = func.Invoke(record)?.ToString();
-                _textChanges[control.Name] = false;
-            };
-
-            AddControl(control, writeAction, readAction);
-        }
-
-        public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
-        {
-            EventHandler validated = delegate (object sender, EventArgs e)
-            {
-                if (_textChanges[control.Name])
-                {
-                    ValueChanged(writeAction);
-                    _textChanges[control.Name] = false;
-                    _validated[control.Name] = true;
-                }
-            };
-
-            _textBoxValidators.Add(control.Name, new TextBoxValidator(control, validated));
-            _textChanges.Add(control.Name, false);
-            control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
-            control.Validated += validated;
-            _readActions.Add(readAction);
-            _clearActions.Add(() => { control.Text = null; });
-        }
-
-        public void AddControl(RadioButton control, Action<TRecord> writeAction, Action<TRecord> readAction)
-        {
-            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
-            _clearActions.Add(() => { control.Checked = false; });
-        }
-
-        public void AddRadioButtons<TValue>(RadioButtonDictionary<TValue> radioButtons, Expression<Func<TRecord, TValue>> property)
-        {
-            PropertyInfo pi = GetProperty(property);
-
-            foreach (var rbb in radioButtons)
-            {
-                Action<TRecord> writeAction = (record) =>
-                {
-                    pi.SetValue(record, rbb.Key);
-                };
-
-                var func = property.Compile();
-                Action<TRecord> readAction = (record) =>
-                {
-                    rbb.Value.Checked = func.Invoke(record).Equals(rbb.Key);
-                };
-
-                AddControl(rbb.Value, writeAction, readAction);
-            }
-        }
-
-        public void AddControl(CheckBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
-        {
-            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-            _readActions.Add(readAction);
-            _clearActions.Add(() => { control.Checked = false; });
-        }
-
-        public void AddControl(CheckBox control, Expression<Func<TRecord, bool>> property)
-        {
-            PropertyInfo pi = GetProperty(property);
-            Action<TRecord> writeAction = (record) =>
-            {
-                pi.SetValue(record, control.Text);
-            };
-
-            var func = property.Compile();
-            Action<TRecord> readAction = (record) =>
-            {
-                control.Checked = Convert.ToBoolean(func.Invoke(record));
-            };
-
-            AddControl(control, writeAction, readAction);
         }
 
         private void ValueChanged(Action<TRecord> setProperty)
@@ -449,6 +322,7 @@ namespace Postulate.WinForms
 
     public interface IFormBinderControl
     {
+        string Name { get; }
         event EventHandler ValueChanged;
     }
 }
