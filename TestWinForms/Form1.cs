@@ -54,9 +54,8 @@ namespace TestWinForms
             {
                 int id;
                 if (int.TryParse(tbFind.Text, out id))
-                {
-                    var record = _db.Find<Customer>(id);
-                    _binder.Load(record);
+                {                    
+                    _binder.Load(id);
                 }
             }
             catch (Exception exc)

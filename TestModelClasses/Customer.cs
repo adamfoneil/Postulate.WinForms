@@ -37,6 +37,7 @@ namespace Test2.Models
         [Required]
         public string Email { get; set; }
         
+        [DefaultExpression("0")]
         public bool IsTaxExempt { get; set; }
     }
 }

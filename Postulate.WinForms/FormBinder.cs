@@ -1,27 +1,26 @@
 ﻿using Postulate.Orm.Abstract;
-using Postulate.Orm.Enums;
 using Postulate.WinForms.Controls;
 using ReflectionHelper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace Postulate.WinForms
 {
-	public class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
-	{
-		private Form _form;
-		private TRecord _record;
-		private bool _suspend = false;
-		private bool _dirty = false;
-		private SqlDb<TKey> _db;
-		private List<Action<TRecord>> _readActions;
-		private List<Action> _clearActions;
+    public class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
+    {
+        private Form _form;
+        private TRecord _record;
+        private bool _suspend = false;
+        private bool _dirty = false;
+        private SqlDb<TKey> _db;
+        private List<Action<TRecord>> _readActions;
+        private List<Action> _clearActions;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
@@ -29,46 +28,46 @@ namespace Postulate.WinForms
 
         public ValidationPanel ValidationPanel { get; set; }
 
-		public event EventHandler Dirty;
+        public event EventHandler Dirty;
 
-		public event EventHandler Clean;
+        public event EventHandler Clean;
 
-		public event EventHandler SavingRecord;
+        public event EventHandler SavingRecord;
 
-		public event EventHandler RecordLoaded;
+        public event EventHandler RecordLoaded;
 
-		public event EventHandler RecordSaved;
+        public event EventHandler RecordSaved;
 
-		public event EventHandler RecordDeleted;
+        public event EventHandler RecordDeleted;
 
-		public event EventHandler NewRecord;
+        public event EventHandler NewRecord;
 
-		public Control FirstControl { get; set; }
+        public Control FirstControl { get; set; }
 
-		public FormBinder(Form form, SqlDb<TKey> sqlDb)
-		{
-			_form = form;
-			_form.KeyPreview = true;
-			_form.FormClosing += delegate (object sender, FormClosingEventArgs e)
-			{
-				if (!Save())
-				{
-					if (MessageBox.Show(
-						"The record could not be saved. Click OK to try again, or Cancel to lose your changes.",
-						"Form Closing", MessageBoxButtons.OKCancel) == DialogResult.OK)
-					{
-						e.Cancel = true;
-					}
-				}
-			};
+        public FormBinder(Form form, SqlDb<TKey> sqlDb)
+        {
+            _form = form;
+            _form.KeyPreview = true;
+            _form.FormClosing += delegate (object sender, FormClosingEventArgs e)
+            {
+                if (!Save())
+                {
+                    if (MessageBox.Show(
+                        "The record could not be saved. Click OK to try again, or Cancel to lose your changes.",
+                        "Form Closing", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            };
 
-			_form.KeyDown += delegate (object sender, KeyEventArgs e)
-			{
-				if (e.KeyCode == Keys.Enter && e.Shift && !e.Control)
-				{
-					Save();
-					e.Handled = true;
-				}
+            _form.KeyDown += delegate (object sender, KeyEventArgs e)
+            {
+                if (e.KeyCode == Keys.Enter && e.Shift && !e.Control)
+                {
+                    Save();
+                    e.Handled = true;
+                }
 
                 if (e.KeyCode == Keys.Enter && e.Shift && e.Control)
                 {
@@ -76,17 +75,17 @@ namespace Postulate.WinForms
                     e.Handled = true;
                 }
 
-				if (e.KeyCode == Keys.Add && e.Control)
-				{
-					AddNew();
-					e.Handled = true;
-				}
+                if (e.KeyCode == Keys.Add && e.Control)
+                {
+                    AddNew();
+                    e.Handled = true;
+                }
 
-				if (e.KeyCode == Keys.Subtract && e.Control)
-				{
-					Delete();
-					e.Handled = true;
-				}
+                if (e.KeyCode == Keys.Subtract && e.Control)
+                {
+                    Delete();
+                    e.Handled = true;
+                }
 
                 if (e.KeyCode == Keys.Escape)
                 {
@@ -98,7 +97,7 @@ namespace Postulate.WinForms
                         _escapeTimer.Start();
                     }
                     else
-                    {                        
+                    {
                         if (MessageBox.Show("Click OK to undo changes to the record.", "Undo", MessageBoxButtons.OKCancel) == DialogResult.OK)
                         {
                             UndoChanges();
@@ -106,12 +105,12 @@ namespace Postulate.WinForms
                         e.Handled = true;
                     }
                 }
-			};
+            };
 
-			_readActions = new List<Action<TRecord>>();
-			_clearActions = new List<Action>();
-			_db = sqlDb;
-		}
+            _readActions = new List<Action<TRecord>>();
+            _clearActions = new List<Action>();
+            _db = sqlDb;
+        }
 
         private void _escapeTimer_Tick(object sender, EventArgs e)
         {
@@ -120,32 +119,38 @@ namespace Postulate.WinForms
         }
 
         public TRecord CurrentRecord
-		{
-			get { return _record; }
-		}
+        {
+            get { return _record; }
+        }
 
-		public bool Load(TRecord record)
-		{
+        public bool Load(TKey id)
+        {
+            var record = _db.Find<TRecord>(id);
+            return Load(record);
+        }
+
+        public bool Load(TRecord record)
+        {
             if (record == null) throw new ArgumentNullException(nameof(record));
 
-			if (Save())
-			{
-				_record = record;
-				_suspend = true;
-				foreach (var action in _readActions) action.Invoke(record);
-				RecordLoaded?.Invoke(this, new EventArgs());
+            if (Save())
+            {
+                _record = record;
+                _suspend = true;
+                foreach (var action in _readActions) action.Invoke(record);
+                RecordLoaded?.Invoke(this, new EventArgs());
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "Record loaded");
-				_suspend = false;
-				return true;
-			}
-			return false;
-		}
+                _suspend = false;
+                return true;
+            }
+            return false;
+        }
 
         public bool Validate()
         {
             using (var cn = _db.GetConnection())
             {
-                cn.Open();                
+                cn.Open();
                 string message;
                 RecordStatus status = (_record.IsValid(cn, out message)) ? RecordStatus.Editing : RecordStatus.Invalid;
                 ValidationPanel?.SetStatus(status, message ?? "Record has no errors");
@@ -153,79 +158,79 @@ namespace Postulate.WinForms
             }
         }
 
-		public bool Save()
-		{
+        public bool Save()
+        {
             // get the textboxes with changes that haven't fired Validated event
             var unvalidatedTextboxes = _textChanges.Where(kp => kp.Value && !_validated[kp.Key]).Select(kp => kp.Key).ToList();
             foreach (var tb in unvalidatedTextboxes) _textBoxValidators[tb].Validated.Invoke(this, new EventArgs());
 
-			if (_suspend) return true;
-			_suspend = true;
+            if (_suspend) return true;
+            _suspend = true;
 
-			try
-			{
-				if (IsDirty)
-				{          
-					SavingRecord?.Invoke(this, new EventArgs());
+            try
+            {
+                if (IsDirty)
+                {
+                    SavingRecord?.Invoke(this, new EventArgs());
                     _db.Save(_record);
-					IsDirty = false;
-					RecordSaved?.Invoke(this, new EventArgs());
+                    IsDirty = false;
+                    RecordSaved?.Invoke(this, new EventArgs());
                     ValidationPanel?.SetStatus(RecordStatus.Valid, "Record saved");
-				}
-				return true;
-			}
-			catch (Exception exc)
-			{
+                }
+                return true;
+            }
+            catch (Exception exc)
+            {
                 ValidationPanel?.SetStatus(RecordStatus.Invalid, exc.Message);
 
-				if (MessageBox.Show($"The record could not be saved: {exc.Message}\r\nClick OK to try again or Cancel to lose your changes.", "Save Error", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
-				{
-					UndoChanges();
-					return true;
-				}
-				return false;
-			}
-			finally
-			{
-				_suspend = false;
-			}
-		}
+                if (MessageBox.Show($"The record could not be saved: {exc.Message}\r\nClick OK to try again or Cancel to lose your changes.", "Save Error", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    UndoChanges();
+                    return true;
+                }
+                return false;
+            }
+            finally
+            {
+                _suspend = false;
+            }
+        }
 
-		public bool AddNew()
-		{
-			if (Save())
-			{                
-				_record = new TRecord();
-				_suspend = true;
-				foreach (var action in _clearActions) action.Invoke();
-				NewRecord?.Invoke(this, new EventArgs());
-				FirstControl?.Focus();
+        public bool AddNew()
+        {
+            if (Save())
+            {
+                _record = new TRecord();
+                _suspend = true;
+                foreach (var action in _clearActions) action.Invoke();
+                NewRecord?.Invoke(this, new EventArgs());
+                FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
-				_suspend = false;
-				return true;
-			}
-			return false;
-		}
+                _suspend = false;
+                return true;
+            }
+            return false;
+        }
 
-		public void UndoChanges()
-		{
-			IsDirty = false;
-			_suspend = true;
-			foreach (var action in _readActions) action.Invoke(_record);
-			_suspend = false;
-		}
+        public void UndoChanges()
+        {
+            IsDirty = false;
+            _suspend = true;
+            foreach (var action in _readActions) action.Invoke(_record);
+            _suspend = false;
+        }
 
-		public bool Delete()
-		{
-			if (MessageBox.Show("This will delete the record permanently.", "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
-			{
-				_db.DeleteOne(_record);
-				RecordDeleted?.Invoke(this, new EventArgs());
-				IsDirty = false;
-				return AddNew();
-			}
-			return false;
-		}
+        public bool Delete()
+        {
+            if (MessageBox.Show("This will delete the record permanently.", "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                _db.DeleteOne(_record);
+                RecordDeleted?.Invoke(this, new EventArgs());
+                IsDirty = false;
+                return AddNew();
+            }
+            return false;
+        }
 
         public void AddControl<TValue>(ComboBox control, Expression<Func<TRecord, object>> property)
         {
@@ -257,12 +262,12 @@ namespace Postulate.WinForms
             _clearActions.Add(() => { control.SelectedIndex = -1; });
         }
 
-		public void AddControl(IFormBinderControl control, Action<TRecord> writeAction, Action<TRecord> readAction, Action clearAction)
-		{
-			control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-			_readActions.Add(readAction);
-			_clearActions.Add(clearAction);
-		}
+        public void AddControl(IFormBinderControl control, Action<TRecord> writeAction, Action<TRecord> readAction, Action clearAction)
+        {
+            control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
+            _readActions.Add(readAction);
+            _clearActions.Add(clearAction);
+        }
 
         public void AddControl(TextBox control, Expression<Func<TRecord, object>> property)
         {
@@ -270,7 +275,7 @@ namespace Postulate.WinForms
         }
 
         public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property)
-        {            
+        {
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> writeAction = (record) =>
             {
@@ -290,8 +295,8 @@ namespace Postulate.WinForms
             AddControl(control, writeAction, readAction);
         }
 
-		public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
-		{
+        public void AddControl(TextBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
+        {
             EventHandler validated = delegate (object sender, EventArgs e)
             {
                 if (_textChanges[control.Name])
@@ -305,18 +310,17 @@ namespace Postulate.WinForms
             _textBoxValidators.Add(control.Name, new TextBoxValidator(control, validated));
             _textChanges.Add(control.Name, false);
             control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
-			control.Validated += validated;
-			_readActions.Add(readAction);
-			_clearActions.Add(() => { control.Text = null; });
-            
-		}
+            control.Validated += validated;
+            _readActions.Add(readAction);
+            _clearActions.Add(() => { control.Text = null; });
+        }
 
-		public void AddControl(RadioButton control, Action<TRecord> writeAction, Action<TRecord> readAction)
-		{
-			control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-			_readActions.Add(readAction);
-			_clearActions.Add(() => { control.Checked = false; });
-		}
+        public void AddControl(RadioButton control, Action<TRecord> writeAction, Action<TRecord> readAction)
+        {
+            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
+            _readActions.Add(readAction);
+            _clearActions.Add(() => { control.Checked = false; });
+        }
 
         public void AddRadioButtons<TValue>(RadioButtonDictionary<TValue> radioButtons, Expression<Func<TRecord, TValue>> property)
         {
@@ -339,12 +343,12 @@ namespace Postulate.WinForms
             }
         }
 
-		public void AddControl(CheckBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
-		{
-			control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
-			_readActions.Add(readAction);
-			_clearActions.Add(() => { control.Checked = false; });
-		}
+        public void AddControl(CheckBox control, Action<TRecord> writeAction, Action<TRecord> readAction)
+        {
+            control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(writeAction); };
+            _readActions.Add(readAction);
+            _clearActions.Add(() => { control.Checked = false; });
+        }
 
         public void AddControl(CheckBox control, Expression<Func<TRecord, bool>> property)
         {
@@ -364,20 +368,20 @@ namespace Postulate.WinForms
         }
 
         private void ValueChanged(Action<TRecord> setProperty)
-		{
-			if (_suspend) return;
-			setProperty.Invoke(_record);
-			IsDirty = true;
-		}
+        {
+            if (_suspend) return;
+            setProperty.Invoke(_record);
+            IsDirty = true;
+        }
 
-		public bool IsDirty
-		{
-			get { return _dirty; }
-			set
-			{
-				if (_dirty != value)
-				{
-					_dirty = value;
+        public bool IsDirty
+        {
+            get { return _dirty; }
+            set
+            {
+                if (_dirty != value)
+                {
+                    _dirty = value;
                     if (value)
                     {
                         Dirty?.Invoke(this, new EventArgs());
@@ -388,27 +392,27 @@ namespace Postulate.WinForms
                         Clean?.Invoke(this, new EventArgs());
                         ValidationPanel?.SetStatus(RecordStatus.Valid, "Record restored...");
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
-		public bool FindCurrentPosition(BindingList<TRecord> list, out int position)
-		{
-			position = -1;
+        public bool FindCurrentPosition(BindingList<TRecord> list, out int position)
+        {
+            position = -1;
 
-			if (_record == null) return false;
+            if (_record == null) return false;
 
-			for (int index = 0; index < list.Count; index++)
-			{
-				if (list[index].Id.Equals(_record.Id))
-				{
-					position = index;
-					return true;
-				}
-			}
+            for (int index = 0; index < list.Count; index++)
+            {
+                if (list[index].Id.Equals(_record.Id))
+                {
+                    position = index;
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
         private string PropertyNameFromLambda(Expression expression)
         {
@@ -442,7 +446,7 @@ namespace Postulate.WinForms
     }
 
     public interface IFormBinderControl
-	{
-		event EventHandler ValueChanged;
-	}
+    {
+        event EventHandler ValueChanged;
+    }
 }

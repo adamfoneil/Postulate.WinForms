@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Postulate.WinForms
@@ -18,6 +14,6 @@ namespace Postulate.WinForms
             _validatedEvent = validatedEvent;
         }
 
-        public EventHandler Validated {  get { return _validatedEvent; } }
+        public EventHandler Validated { get { return _validatedEvent; } }
     }
 }
