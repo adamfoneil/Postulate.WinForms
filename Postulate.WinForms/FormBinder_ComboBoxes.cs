@@ -34,7 +34,7 @@ namespace Postulate.WinForms
             }
             else
             {
-                AddComboBox(control, setProperty, setControl, () => { control.SetValue(defaultValue); }, !defaultValue.Equals(default(TValue)));
+                AddComboBox(control, setProperty, setControl, () => { control.SetValue(defaultValue); }, !defaultValue?.Equals(default(TValue)) ?? false);
             }
         }
 
