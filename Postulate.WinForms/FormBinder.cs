@@ -48,6 +48,9 @@ namespace Postulate.WinForms
         {
             _form = form;
             _form.KeyPreview = true;
+
+            _form.Load += delegate (object sender, EventArgs e) { AddNew(); };
+
             _form.FormClosing += delegate (object sender, FormClosingEventArgs e)
             {
                 if (!Save())

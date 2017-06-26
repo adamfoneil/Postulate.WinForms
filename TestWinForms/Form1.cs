@@ -45,8 +45,6 @@ namespace TestWinForms
         {            
             cbOrg.Fill(new OrgSelect());
             cbState.Fill(new StateSelect());
-
-            _binder.AddNew();
         }
 
         private void btnFind_Click(object sender, EventArgs e)
