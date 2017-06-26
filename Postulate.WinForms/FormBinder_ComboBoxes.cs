@@ -12,6 +12,11 @@ namespace Postulate.WinForms
 {
     public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
+        public void AddControl(ComboBox control, Expression<Func<TRecord, object>> property, int defaultValue = -1)
+        {
+            AddControl<int>(control, property, defaultValue);
+        }
+
         public void AddControl<TValue>(ComboBox control, Expression<Func<TRecord, object>> property, TValue defaultValue = default(TValue))
         {
             PropertyInfo pi = GetProperty(property);

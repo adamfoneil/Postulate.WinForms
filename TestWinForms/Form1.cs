@@ -32,7 +32,7 @@ namespace TestWinForms
             {
                 { true, rbIsTaxExemptTrue },
                 { false, rbTaxExemptFalse }
-            }, c => c.IsTaxExempt);
+            }, c => c.IsTaxExempt, false);
         }
 
         private void binder_RecordSaved(object sender, EventArgs e)
