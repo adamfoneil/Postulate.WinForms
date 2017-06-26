@@ -24,6 +24,7 @@ namespace Postulate.WinForms
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
         private Timer _escapeTimer = null;
         private TRecord _priorRecord = null;
+        private DittoAction<TRecord, TKey> _ditto = null;
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -104,6 +105,17 @@ namespace Postulate.WinForms
                         e.Handled = true;
                     }
                 }
+
+                if (e.KeyCode == Keys.OemQuotes && e.Control)
+                {
+                    if (_priorRecord != null)
+                    {                        
+                        _ditto?.SetControl.Invoke(_priorRecord);
+                        _ditto?.SetProperty.Invoke(_record);
+                    }
+                        
+                    e.Handled = true;
+                }
             };
 
             _setControls = new List<Action<TRecord>>();
@@ -134,6 +146,7 @@ namespace Postulate.WinForms
 
             if (Save())
             {
+                if (_record != null) _priorRecord = _record;
                 _record = record;
                 _suspend = true;
                 foreach (var action in _setControls) action.Invoke(record);
@@ -325,12 +338,24 @@ namespace Postulate.WinForms
             PropertyInfo pi = typeof(TRecord).GetProperty(propName);
             return pi;
         }
+
+        private void InitDitto(Control control, Action<TRecord> setProperty, Action<TRecord> setControl)
+        {
+            control.Enter += delegate (object sender, EventArgs e) { _ditto = new DittoAction<TRecord, TKey>() { SetControl = setControl, SetProperty = setProperty }; };
+            control.Leave += delegate (object sender, EventArgs e) { _ditto = null; };
+        }
     }
 
     internal class DefaultAction<TRecord, TKey> where TRecord : Record<TKey>
     {                
         public Action SetControl { get; set; }
         public bool InvokeSetProperty { get; set; }
+        public Action<TRecord> SetProperty { get; set; }
+    }
+
+    internal class DittoAction<TRecord, TKey> where TRecord : Record<TKey>
+    {
+        public Action<TRecord> SetControl { get; set; }
         public Action<TRecord> SetProperty { get; set; }
     }
 

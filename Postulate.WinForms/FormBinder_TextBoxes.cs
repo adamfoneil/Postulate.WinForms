@@ -50,6 +50,9 @@ namespace Postulate.WinForms
 
             _textBoxValidators.Add(control.Name, new TextBoxValidator(control, validated));
             _textChanges.Add(control.Name, false);
+
+            InitDitto(control, setProperty, setControl);
+
             control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
             control.Validated += validated;
             _setControls.Add(setControl);
