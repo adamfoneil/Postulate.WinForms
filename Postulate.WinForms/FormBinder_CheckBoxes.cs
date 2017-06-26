@@ -12,7 +12,7 @@ namespace Postulate.WinForms
         {
             control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _clearActions.Add(() => { control.Checked = defaultValue; });
+            _setDefaults.Add(() => { control.Checked = defaultValue; });
         }
 
         public void AddControl(CheckBox control, Expression<Func<TRecord, bool>> property, bool defaultValue = false)
@@ -20,13 +20,13 @@ namespace Postulate.WinForms
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> setProperty = (record) =>
             {
-                pi.SetValue(record, control.Text);
+                pi.SetValue(record, control.Checked);
             };
 
             var func = property.Compile();
             Action<TRecord> setControl = (record) =>
             {
-                control.Checked = Convert.ToBoolean(func.Invoke(record));
+                control.Checked = func.Invoke(record);
             };
 
             AddControl(control, setProperty, setControl, defaultValue);

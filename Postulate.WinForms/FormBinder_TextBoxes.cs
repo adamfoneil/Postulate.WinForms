@@ -57,7 +57,7 @@ namespace Postulate.WinForms
             control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
             control.Validated += validated;
             _setControls.Add(setControl);
-            _clearActions.Add(() => { control.Text = defaultValue?.ToString(); });
+            _setDefaults.Add(() => { control.Text = defaultValue?.ToString(); });
         }
     }
 }

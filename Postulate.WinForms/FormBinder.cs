@@ -20,7 +20,7 @@ namespace Postulate.WinForms
         private bool _dirty = false;
         private SqlDb<TKey> _db;
         private List<Action<TRecord>> _setControls;
-        private List<Action> _clearActions;
+        private List<Action> _setDefaults;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
@@ -93,7 +93,7 @@ namespace Postulate.WinForms
                     if (_escapeTimer == null)
                     {
                         _escapeTimer = new Timer();
-                        _escapeTimer.Tick += _escapeTimer_Tick;
+                        _escapeTimer.Tick += escapeTimer_Tick;
                         _escapeTimer.Interval = 500;
                         _escapeTimer.Start();
                     }
@@ -109,11 +109,11 @@ namespace Postulate.WinForms
             };
 
             _setControls = new List<Action<TRecord>>();
-            _clearActions = new List<Action>();
+            _setDefaults = new List<Action>();
             _db = sqlDb;
         }
 
-        private void _escapeTimer_Tick(object sender, EventArgs e)
+        private void escapeTimer_Tick(object sender, EventArgs e)
         {
             _escapeTimer.Stop();
             _escapeTimer = null;
@@ -204,7 +204,7 @@ namespace Postulate.WinForms
                 if (_record != null) _priorRecord = _record;
                 _record = new TRecord();
                 _suspend = true;
-                foreach (var action in _clearActions) action.Invoke();                
+                foreach (var action in _setDefaults) action.Invoke();                
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
@@ -235,11 +235,11 @@ namespace Postulate.WinForms
             return false;
         }
 
-        public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action clearAction)
+        public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction)
         {            
             control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _clearActions.Add(clearAction);
+            _setDefaults.Add(defaultAction);
         }
 
         private void ValueChanged(Action<TRecord> setProperty)

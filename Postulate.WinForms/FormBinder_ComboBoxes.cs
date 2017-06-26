@@ -46,11 +46,11 @@ namespace Postulate.WinForms
             AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = defaultValue; });
         }
 
-        private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action clearAction)
+        private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction)
         {
             control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _clearActions.Add(clearAction);
+            _setDefaults.Add(defaultAction);
         }
     }
 }
