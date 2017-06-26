@@ -25,6 +25,7 @@ namespace Postulate.WinForms
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
         private Timer _escapeTimer = null;
+        private TRecord _priorRecord = null;
 
         public ValidationPanel ValidationPanel { get; set; }
 
@@ -200,6 +201,7 @@ namespace Postulate.WinForms
         {
             if (Save())
             {
+                if (_record != null) _priorRecord = _record;
                 _record = new TRecord();
                 _suspend = true;
                 foreach (var action in _clearActions) action.Invoke();
@@ -220,9 +222,10 @@ namespace Postulate.WinForms
             _suspend = false;
         }
 
-        public bool Delete()
+        public bool Delete(string message = null)
         {
-            if (MessageBox.Show("This will delete the record permanently.", "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (string.IsNullOrEmpty(message)) message = "This will delete the record permanently.";
+            if (MessageBox.Show(message, "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 _db.DeleteOne(_record);
                 RecordDeleted?.Invoke(this, new EventArgs());
@@ -243,8 +246,7 @@ namespace Postulate.WinForms
             var func = property.Compile();
             Action<TRecord> readAction = (record) =>
             {
-                control.SetValue((TValue)func.Invoke(record));
-                //control.SelectedIndex = control.Items.IndexOf((TValue)func.Invoke(record));
+                control.SetValue((TValue)func.Invoke(record));                
             };
 
             AddControl(control, writeAction, readAction);
