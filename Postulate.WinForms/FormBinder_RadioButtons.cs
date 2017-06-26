@@ -12,7 +12,12 @@ namespace Postulate.WinForms
         {
             control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _setDefaults.Add(() => { control.Checked = defaultValue; });
+            _setDefaults.Add(new DefaultAction<TRecord, TKey>()
+            {
+                SetControl = () => { control.Checked = defaultValue; },
+                InvokeSetProperty = defaultValue,
+                SetProperty = setProperty
+            });
         }
 
         public void AddRadioButtons<TValue>(RadioButtonDictionary<TValue> radioButtons, Expression<Func<TRecord, TValue>> property, TValue defaultValue = default(TValue))

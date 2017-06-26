@@ -18,7 +18,7 @@ namespace Postulate.WinForms
         private bool _dirty = false;
         private SqlDb<TKey> _db;
         private List<Action<TRecord>> _setControls;
-        private List<Action> _setDefaults;
+        private List<DefaultAction<TRecord, TKey>> _setDefaults;
         private Dictionary<string, bool> _textChanges = new Dictionary<string, bool>();
         private Dictionary<string, bool> _validated = new Dictionary<string, bool>();
         private Dictionary<string, TextBoxValidator> _textBoxValidators = new Dictionary<string, TextBoxValidator>();
@@ -107,7 +107,7 @@ namespace Postulate.WinForms
             };
 
             _setControls = new List<Action<TRecord>>();
-            _setDefaults = new List<Action>();
+            _setDefaults = new List<DefaultAction<TRecord, TKey>>();
             _db = sqlDb;
         }
 
@@ -202,7 +202,11 @@ namespace Postulate.WinForms
                 if (_record != null) _priorRecord = _record;
                 _record = new TRecord();
                 _suspend = true;
-                foreach (var action in _setDefaults) action.Invoke();
+                foreach (var action in _setDefaults)
+                {
+                    action.SetControl.Invoke();
+                    if (action.InvokeSetProperty) action.SetProperty.Invoke(_record);
+                }
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
@@ -233,17 +237,22 @@ namespace Postulate.WinForms
             return false;
         }
 
-        public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction)
+        public void AddControl(IFormBinderControl control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction, bool invokeSetterOnDefault = false)
         {
             control.ValueChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _setDefaults.Add(defaultAction);
+            _setDefaults.Add(new DefaultAction<TRecord, TKey>()
+            {
+                SetControl = defaultAction,
+                InvokeSetProperty = invokeSetterOnDefault,
+                SetProperty = setProperty
+            });
         }
 
         private void ValueChanged(Action<TRecord> setProperty)
-        {
-            if (_suspend) return;
+        {            
             setProperty.Invoke(_record);
+            if (_suspend) return;
             IsDirty = true;
         }
 
@@ -316,6 +325,13 @@ namespace Postulate.WinForms
             PropertyInfo pi = typeof(TRecord).GetProperty(propName);
             return pi;
         }
+    }
+
+    internal class DefaultAction<TRecord, TKey> where TRecord : Record<TKey>
+    {                
+        public Action SetControl { get; set; }
+        public bool InvokeSetProperty { get; set; }
+        public Action<TRecord> SetProperty { get; set; }
     }
 
     public interface IFormBinderControl

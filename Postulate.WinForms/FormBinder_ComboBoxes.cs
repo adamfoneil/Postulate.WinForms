@@ -29,24 +29,30 @@ namespace Postulate.WinForms
 
             if (typeof(TValue).Equals(typeof(int)))
             {
-                AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = -1; });
+                int defaultIndex = Convert.ToInt32(defaultValue);
+                AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = defaultIndex; }, defaultIndex != -1);
             }
             else
             {
-                AddComboBox(control, setProperty, setControl, () => { control.SetValue(defaultValue); });
+                AddComboBox(control, setProperty, setControl, () => { control.SetValue(defaultValue); }, !defaultValue.Equals(default(TValue)));
             }
         }
 
         public void AddControl(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, int defaultValue = -1)
         {
-            AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = defaultValue; });
+            AddComboBox(control, setProperty, setControl, () => { control.SelectedIndex = defaultValue; }, (defaultValue != -1));
         }
 
-        private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction)
+        private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction, bool invokeSetProperty)
         {
             control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
-            _setDefaults.Add(defaultAction);
+            _setDefaults.Add(new DefaultAction<TRecord, TKey>()
+            {
+                SetControl = defaultAction,
+                InvokeSetProperty = invokeSetProperty,
+                SetProperty = setProperty
+            });
         }
     }
 }
