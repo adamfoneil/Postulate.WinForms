@@ -46,6 +46,7 @@ namespace Postulate.WinForms
         private void AddComboBox(ComboBox control, Action<TRecord> setProperty, Action<TRecord> setControl, Action defaultAction, bool invokeSetProperty)
         {
             InitDitto(control, setProperty, setControl);
+            if (FirstControl == null) FirstControl = control;
 
             control.SelectedIndexChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);

@@ -38,6 +38,8 @@ namespace Postulate.WinForms
 
         public void AddControl(TextBox control, Action<TRecord> setProperty, Action<TRecord> setControl, object defaultValue = null, EventHandler afterUpdated = null)
         {
+            if (FirstControl == null) FirstControl = control;
+
             EventHandler validated = delegate (object sender, EventArgs e)
             {
                 if (_textChanges[control.Name])

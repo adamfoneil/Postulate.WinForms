@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tbFirstName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tbLastName = new System.Windows.Forms.TextBox();
@@ -49,16 +50,18 @@
             this.label9 = new System.Windows.Forms.Label();
             this.rbTaxExemptFalse = new System.Windows.Forms.RadioButton();
             this.rbIsTaxExemptTrue = new System.Windows.Forms.RadioButton();
-            this.tbFind = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnFind = new System.Windows.Forms.Button();
             this.chkSendNewsletter = new System.Windows.Forms.CheckBox();
             this.formBinderToolStrip1 = new Postulate.WinForms.Controls.FormBinderToolStrip();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.tbFind = new System.Windows.Forms.ToolStripTextBox();
+            this.btnFind = new System.Windows.Forms.ToolStripButton();
+            this.formBinderToolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbFirstName
             // 
-            this.tbFirstName.Location = new System.Drawing.Point(82, 98);
+            this.tbFirstName.Location = new System.Drawing.Point(83, 68);
             this.tbFirstName.Name = "tbFirstName";
             this.tbFirstName.Size = new System.Drawing.Size(191, 20);
             this.tbFirstName.TabIndex = 6;
@@ -66,7 +69,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 101);
+            this.label1.Location = new System.Drawing.Point(17, 71);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 5;
@@ -74,7 +77,7 @@
             // 
             // tbLastName
             // 
-            this.tbLastName.Location = new System.Drawing.Point(82, 124);
+            this.tbLastName.Location = new System.Drawing.Point(83, 94);
             this.tbLastName.Name = "tbLastName";
             this.tbLastName.Size = new System.Drawing.Size(191, 20);
             this.tbLastName.TabIndex = 8;
@@ -82,7 +85,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(15, 127);
+            this.label2.Location = new System.Drawing.Point(16, 97);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 13);
             this.label2.TabIndex = 7;
@@ -90,7 +93,7 @@
             // 
             // tbAddress
             // 
-            this.tbAddress.Location = new System.Drawing.Point(82, 150);
+            this.tbAddress.Location = new System.Drawing.Point(83, 120);
             this.tbAddress.Name = "tbAddress";
             this.tbAddress.Size = new System.Drawing.Size(191, 20);
             this.tbAddress.TabIndex = 10;
@@ -98,7 +101,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 153);
+            this.label3.Location = new System.Drawing.Point(29, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(48, 13);
             this.label3.TabIndex = 9;
@@ -106,7 +109,7 @@
             // 
             // tbCity
             // 
-            this.tbCity.Location = new System.Drawing.Point(82, 176);
+            this.tbCity.Location = new System.Drawing.Point(83, 146);
             this.tbCity.Name = "tbCity";
             this.tbCity.Size = new System.Drawing.Size(191, 20);
             this.tbCity.TabIndex = 12;
@@ -114,7 +117,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(49, 179);
+            this.label4.Location = new System.Drawing.Point(50, 149);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(27, 13);
             this.label4.TabIndex = 11;
@@ -123,7 +126,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(41, 205);
+            this.label5.Location = new System.Drawing.Point(42, 175);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(35, 13);
             this.label5.TabIndex = 13;
@@ -131,7 +134,7 @@
             // 
             // tbZipCode
             // 
-            this.tbZipCode.Location = new System.Drawing.Point(82, 229);
+            this.tbZipCode.Location = new System.Drawing.Point(83, 199);
             this.tbZipCode.Name = "tbZipCode";
             this.tbZipCode.Size = new System.Drawing.Size(94, 20);
             this.tbZipCode.TabIndex = 16;
@@ -139,7 +142,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(23, 232);
+            this.label6.Location = new System.Drawing.Point(24, 202);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(53, 13);
             this.label6.TabIndex = 15;
@@ -147,7 +150,7 @@
             // 
             // tbEmail
             // 
-            this.tbEmail.Location = new System.Drawing.Point(82, 255);
+            this.tbEmail.Location = new System.Drawing.Point(83, 225);
             this.tbEmail.Name = "tbEmail";
             this.tbEmail.Size = new System.Drawing.Size(191, 20);
             this.tbEmail.TabIndex = 18;
@@ -155,7 +158,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(41, 258);
+            this.label7.Location = new System.Drawing.Point(42, 228);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 17;
@@ -165,7 +168,7 @@
             // 
             this.cbOrg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbOrg.FormattingEnabled = true;
-            this.cbOrg.Location = new System.Drawing.Point(82, 71);
+            this.cbOrg.Location = new System.Drawing.Point(83, 41);
             this.cbOrg.Name = "cbOrg";
             this.cbOrg.Size = new System.Drawing.Size(191, 21);
             this.cbOrg.TabIndex = 4;
@@ -173,7 +176,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(49, 74);
+            this.label8.Location = new System.Drawing.Point(50, 44);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(27, 13);
             this.label8.TabIndex = 3;
@@ -182,7 +185,7 @@
             // lblId
             // 
             this.lblId.AutoSize = true;
-            this.lblId.Location = new System.Drawing.Point(79, 334);
+            this.lblId.Location = new System.Drawing.Point(80, 304);
             this.lblId.Name = "lblId";
             this.lblId.Size = new System.Drawing.Size(35, 13);
             this.lblId.TabIndex = 23;
@@ -202,7 +205,7 @@
             // 
             this.cbState.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbState.FormattingEnabled = true;
-            this.cbState.Location = new System.Drawing.Point(82, 202);
+            this.cbState.Location = new System.Drawing.Point(83, 172);
             this.cbState.Name = "cbState";
             this.cbState.Size = new System.Drawing.Size(191, 21);
             this.cbState.TabIndex = 14;
@@ -210,7 +213,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(19, 306);
+            this.label9.Location = new System.Drawing.Point(20, 276);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(57, 13);
             this.label9.TabIndex = 20;
@@ -219,7 +222,7 @@
             // rbTaxExemptFalse
             // 
             this.rbTaxExemptFalse.AutoSize = true;
-            this.rbTaxExemptFalse.Location = new System.Drawing.Point(82, 304);
+            this.rbTaxExemptFalse.Location = new System.Drawing.Point(83, 274);
             this.rbTaxExemptFalse.Name = "rbTaxExemptFalse";
             this.rbTaxExemptFalse.Size = new System.Drawing.Size(92, 17);
             this.rbTaxExemptFalse.TabIndex = 21;
@@ -230,7 +233,7 @@
             // rbIsTaxExemptTrue
             // 
             this.rbIsTaxExemptTrue.AutoSize = true;
-            this.rbIsTaxExemptTrue.Location = new System.Drawing.Point(180, 304);
+            this.rbIsTaxExemptTrue.Location = new System.Drawing.Point(181, 274);
             this.rbIsTaxExemptTrue.Name = "rbIsTaxExemptTrue";
             this.rbIsTaxExemptTrue.Size = new System.Drawing.Size(60, 17);
             this.rbIsTaxExemptTrue.TabIndex = 22;
@@ -238,36 +241,10 @@
             this.rbIsTaxExemptTrue.Text = "Exempt";
             this.rbIsTaxExemptTrue.UseVisualStyleBackColor = true;
             // 
-            // tbFind
-            // 
-            this.tbFind.Location = new System.Drawing.Point(247, 34);
-            this.tbFind.Name = "tbFind";
-            this.tbFind.Size = new System.Drawing.Size(100, 20);
-            this.tbFind.TabIndex = 1;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(199, 37);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(42, 13);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "Find Id:";
-            // 
-            // btnFind
-            // 
-            this.btnFind.Location = new System.Drawing.Point(353, 32);
-            this.btnFind.Name = "btnFind";
-            this.btnFind.Size = new System.Drawing.Size(32, 23);
-            this.btnFind.TabIndex = 2;
-            this.btnFind.Text = "Go";
-            this.btnFind.UseVisualStyleBackColor = true;
-            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
-            // 
             // chkSendNewsletter
             // 
             this.chkSendNewsletter.AutoSize = true;
-            this.chkSendNewsletter.Location = new System.Drawing.Point(82, 281);
+            this.chkSendNewsletter.Location = new System.Drawing.Point(83, 251);
             this.chkSendNewsletter.Name = "chkSendNewsletter";
             this.chkSendNewsletter.Size = new System.Drawing.Size(104, 17);
             this.chkSendNewsletter.TabIndex = 19;
@@ -276,11 +253,42 @@
             // 
             // formBinderToolStrip1
             // 
+            this.formBinderToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator1,
+            this.toolStripLabel1,
+            this.tbFind,
+            this.btnFind});
             this.formBinderToolStrip1.Location = new System.Drawing.Point(0, 0);
             this.formBinderToolStrip1.Name = "formBinderToolStrip1";
             this.formBinderToolStrip1.Size = new System.Drawing.Size(420, 25);
             this.formBinderToolStrip1.TabIndex = 25;
             this.formBinderToolStrip1.Text = "formBinderToolStrip1";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(46, 22);
+            this.toolStripLabel1.Text = "Find Id:";
+            // 
+            // tbFind
+            // 
+            this.tbFind.Name = "tbFind";
+            this.tbFind.Size = new System.Drawing.Size(100, 25);
+            // 
+            // btnFind
+            // 
+            this.btnFind.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnFind.Image = ((System.Drawing.Image)(resources.GetObject("btnFind.Image")));
+            this.btnFind.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnFind.Name = "btnFind";
+            this.btnFind.Size = new System.Drawing.Size(26, 22);
+            this.btnFind.Text = "Go";
+            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // 
             // Form1
             // 
@@ -289,9 +297,6 @@
             this.ClientSize = new System.Drawing.Size(420, 413);
             this.Controls.Add(this.formBinderToolStrip1);
             this.Controls.Add(this.chkSendNewsletter);
-            this.Controls.Add(this.btnFind);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.tbFind);
             this.Controls.Add(this.rbIsTaxExemptTrue);
             this.Controls.Add(this.rbTaxExemptFalse);
             this.Controls.Add(this.label9);
@@ -316,6 +321,8 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.formBinderToolStrip1.ResumeLayout(false);
+            this.formBinderToolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -344,11 +351,12 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.RadioButton rbTaxExemptFalse;
         private System.Windows.Forms.RadioButton rbIsTaxExemptTrue;
-        private System.Windows.Forms.TextBox tbFind;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button btnFind;
         private System.Windows.Forms.CheckBox chkSendNewsletter;
         private Postulate.WinForms.Controls.FormBinderToolStrip formBinderToolStrip1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripTextBox tbFind;
+        private System.Windows.Forms.ToolStripButton btnFind;
     }
 }
 

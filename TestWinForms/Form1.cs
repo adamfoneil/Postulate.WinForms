@@ -55,7 +55,7 @@ namespace TestWinForms
             {
                 int id;
                 if (int.TryParse(tbFind.Text, out id))
-                {                    
+                {
                     _binder.Load(id);
                 }
             }

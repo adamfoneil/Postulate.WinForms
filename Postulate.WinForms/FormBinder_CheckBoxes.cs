@@ -10,6 +10,8 @@ namespace Postulate.WinForms
     {
         public void AddControl(CheckBox control, Action<TRecord> setProperty, Action<TRecord> setControl, bool defaultValue = false)
         {
+            if (FirstControl == null) FirstControl = control;
+
             control.CheckedChanged += delegate (object sender, EventArgs e) { ValueChanged(setProperty); };
             _setControls.Add(setControl);
             _setDefaults.Add(new DefaultAction<TRecord, TKey>()
