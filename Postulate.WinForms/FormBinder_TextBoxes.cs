@@ -10,12 +10,12 @@ namespace Postulate.WinForms
 {
     public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
-        public void AddControl(TextBox control, Expression<Func<TRecord, object>> property, object defaultValue = null)
+        public void AddControl(TextBox control, Expression<Func<TRecord, object>> property, object defaultValue = null, EventHandler afterUpdated = null)
         {
-            AddControl<object>(control, property, defaultValue);
+            AddControl<object>(control, property, defaultValue, afterUpdated);
         }
 
-        public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property, TValue defaultValue = default(TValue))
+        public void AddControl<TValue>(TextBox control, Expression<Func<TRecord, TValue>> property, TValue defaultValue = default(TValue), EventHandler afterUpdated = null)
         {
             PropertyInfo pi = GetProperty(property);
             Action<TRecord> setProperty = (record) =>
@@ -33,10 +33,10 @@ namespace Postulate.WinForms
                 _textChanges[control.Name] = false;
             };
 
-            AddControl(control, setProperty, setControl, defaultValue);
+            AddControl(control, setProperty, setControl, defaultValue, afterUpdated);
         }
 
-        public void AddControl(TextBox control, Action<TRecord> setProperty, Action<TRecord> setControl, object defaultValue = null)
+        public void AddControl(TextBox control, Action<TRecord> setProperty, Action<TRecord> setControl, object defaultValue = null, EventHandler afterUpdated = null)
         {
             EventHandler validated = delegate (object sender, EventArgs e)
             {
@@ -45,6 +45,7 @@ namespace Postulate.WinForms
                     ValueChanged(setProperty);
                     _textChanges[control.Name] = false;
                     _validated[control.Name] = true;
+                    afterUpdated?.Invoke(control, new EventArgs());
                 }
             };
 

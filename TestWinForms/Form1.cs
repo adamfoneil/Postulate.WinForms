@@ -24,7 +24,7 @@ namespace TestWinForms
             _binder.AddControl(tbFirstName, c => c.FirstName);
             _binder.AddControl(tbLastName, c => c.LastName);
             _binder.AddControl(tbAddress, c => c.Address);
-            _binder.AddControl(tbCity, c => c.City);
+            _binder.AddControl(tbCity, c => c.City, null, CityUpdated);
             _binder.AddControl<string>(cbState, c => c.State);
             _binder.AddControl(tbZipCode, c => c.ZipCode);
             _binder.AddControl(tbEmail, c => c.Email);
@@ -34,6 +34,11 @@ namespace TestWinForms
                 { true, rbIsTaxExemptTrue },
                 { false, rbTaxExemptFalse }
             }, c => c.IsTaxExempt, false);
+        }
+
+        private void CityUpdated(object sender, EventArgs e)
+        {
+            MessageBox.Show($"city was updated to {_binder.CurrentRecord.City}");
         }
 
         private void binder_RecordSaved(object sender, EventArgs e)
