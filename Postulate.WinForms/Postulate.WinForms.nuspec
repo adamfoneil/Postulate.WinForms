@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/adamosoftware/Postulate.WinForms</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Data binding features for WinForms using Postulate ORM</description>
+    <copyright>Copyright (c) Adam O'Neil Software 2017</copyright>
+    <tags>WinForms databinding</tags>
+  </metadata>
+</package>
