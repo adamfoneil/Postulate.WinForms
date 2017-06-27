@@ -53,8 +53,17 @@ namespace Postulate.WinForms
 
             InitDitto(control, setProperty, setControl);
 
-            control.TextChanged += delegate (object sender, EventArgs e) { if (!_suspend) { _textChanges[control.Name] = true; _validated[control.Name] = false; } };
+            control.TextChanged += delegate (object sender, EventArgs e)
+            {
+                if (!_suspend)
+                {
+                    _textChanges[control.Name] = true;
+                    _validated[control.Name] = false;
+                }
+            };
+
             control.Validated += validated;
+
             _setControls.Add(setControl);
             _setDefaults.Add(new DefaultAction<TRecord, TKey>()
             {
