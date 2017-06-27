@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace Postulate.WinForms
 {
+    internal delegate bool BinderAction();
+
     public partial class FormBinder<TRecord, TKey> where TRecord : Record<TKey>, new()
     {
         private Form _form;
@@ -42,7 +44,35 @@ namespace Postulate.WinForms
 
         public event EventHandler NewRecord;
 
+        public string DeletePrompt { get; set; }
+
         public Control FirstControl { get; set; }
+
+        private FormBinderToolStrip _toolStrip;
+        public FormBinderToolStrip ToolStrip
+        {
+            get { return _toolStrip; }
+            set
+            {
+                _toolStrip = value;
+
+                Action<BinderAction> tryAction = (action) =>
+                {
+                    try
+                    {
+                        action.Invoke();
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                };
+
+                _toolStrip.AddNew += delegate (object sender, EventArgs e) { tryAction(AddNew); };
+                _toolStrip.Save += delegate (object sender, EventArgs e) { tryAction(Save); };
+                _toolStrip.Delete += delegate (object sender, EventArgs e) { tryAction(Delete); };
+            }
+        }
 
         public FormBinder(Form form, SqlDb<TKey> sqlDb)
         {
@@ -226,7 +256,7 @@ namespace Postulate.WinForms
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
-                _suspend = false;
+                _suspend = false;                
                 return true;
             }
             return false;
@@ -240,10 +270,10 @@ namespace Postulate.WinForms
             _suspend = false;
         }
 
-        public bool Delete(string message = null)
+        public bool Delete()
         {
-            if (string.IsNullOrEmpty(message)) message = "This will delete the record permanently.";
-            if (MessageBox.Show(message, "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            if (string.IsNullOrEmpty(DeletePrompt)) DeletePrompt = "This will delete the record permanently.";
+            if (MessageBox.Show(DeletePrompt, "Delete Record", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 _db.DeleteOne(_record);
                 RecordDeleted?.Invoke(this, new EventArgs());
