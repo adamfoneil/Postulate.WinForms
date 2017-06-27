@@ -23,6 +23,7 @@ namespace Postulate.WinForms.Controls
         private ToolStripButton _btnDelete = new ToolStripButton()
         {
             DisplayStyle = ToolStripItemDisplayStyle.Image,
+            Text = "Delete",
             Image = Resources.Delete
         };
 
@@ -44,5 +45,25 @@ namespace Postulate.WinForms.Controls
         public ToolStripButton AddNewButton { get { return _btnAddNew; } }
         public ToolStripButton DeleteButton {  get { return _btnDelete; } }
         public ToolStripButton SaveButton {  get { return _btnSave; } }
+
+        internal void OnDirty()
+        {
+            _btnSave.Enabled = true;
+            _btnAddNew.Enabled = true;
+        }
+
+        internal void OnClean(bool isNewRecord)
+        {
+            _btnAddNew.Enabled = true;
+            _btnSave.Enabled = false;
+            _btnDelete.Enabled = !isNewRecord;
+        }
+
+        internal void OnNew()
+        {
+            _btnAddNew.Enabled = false;
+            _btnDelete.Enabled = false;
+            _btnSave.Enabled = false;
+        }
     }
 }

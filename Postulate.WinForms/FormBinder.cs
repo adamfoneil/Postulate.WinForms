@@ -256,6 +256,7 @@ namespace Postulate.WinForms
                 NewRecord?.Invoke(this, new EventArgs());
                 FirstControl?.Focus();
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "New record started");
+                ToolStrip?.OnNew();
                 _suspend = false;                
                 return true;
             }
@@ -314,11 +315,13 @@ namespace Postulate.WinForms
                     {
                         Dirty?.Invoke(this, new EventArgs());
                         ValidationPanel?.SetStatus(RecordStatus.Editing, "Edit in progress...");
+                        ToolStrip?.OnDirty();
                     }
                     if (!value)
                     {
                         Clean?.Invoke(this, new EventArgs());
                         ValidationPanel?.SetStatus(RecordStatus.Valid, "Record restored...");
+                        ToolStrip?.OnClean(CurrentRecord?.IsNew() ?? false);
                     }
                 }
             }
