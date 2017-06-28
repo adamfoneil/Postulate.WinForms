@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Postulate.Orm">
-      <Version>0.9.170</Version>
+      <Version>0.9.175</Version>
     </PackageReference>
     <PackageReference Include="Postulate.Sql">
       <Version>1.0.17</Version>

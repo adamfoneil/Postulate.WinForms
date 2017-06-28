@@ -18,12 +18,14 @@ namespace Test2.Models
 
     public class StateSeedData : SeedData<State, int>
     {
-        public override string ExistsCriteria => "[Abbreviation]=@Abbreviation";
+        public override string ExistsCriteria => "[dbo].[State] WHERE [Abbreviation]=@Abbreviation";
 
         public override IEnumerable<State> Records => new State[]
         {
             new State() { Abbreviation = "NC", Name = "North Carolina" },
-            new State() { Abbreviation = "SC", Name = "South Carolina" }
+            new State() { Abbreviation = "SC", Name = "South Carolina" },
+            new State() { Abbreviation = "GA", Name = "Georgia" },
+            new State() { Abbreviation = "VA", Name = "Virginia" }
         };
     }
 }
