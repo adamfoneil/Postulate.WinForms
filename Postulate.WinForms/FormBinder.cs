@@ -185,6 +185,7 @@ namespace Postulate.WinForms
                 foreach (var action in _setControls) action.Invoke(record);
                 RecordLoaded?.Invoke(this, new EventArgs());
                 ValidationPanel?.SetStatus(RecordStatus.Valid, "Record loaded");
+                ToolStrip?.OnClean(false);
                 _suspend = false;
                 return true;
             }
