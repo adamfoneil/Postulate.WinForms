@@ -1,5 +1,5 @@
 # Postulate.WinForms
 
-This project is still in infancy -- will have more info soon. CodeProject.com article coming soon.
+Please see my CodeProject article here: https://www.codeproject.com/Articles/1193797/Postulate-WinForms-a-new-look-at-data-binding
 
 Nuget package: **Postulate.WinForms**
